@@ -1,0 +1,2 @@
+DeviceProcessEvents
+| where FolderPath endswith "/chmod" and ((ProcessCommandLine contains "u+s" or ProcessCommandLine contains "g+s" or ProcessCommandLine contains "ug+s" or ProcessCommandLine contains " +s " or ProcessCommandLine contains "a+s") or ProcessCommandLine matches regex "(^|/|\\s)chmod\\s+(-\\S+\\s+)*0?[246][0-7]{3}\\s")

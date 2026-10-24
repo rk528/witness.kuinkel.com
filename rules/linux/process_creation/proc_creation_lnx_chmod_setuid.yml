@@ -1,0 +1,34 @@
+title: Setuid or Setgid Bit Set With chmod
+id: 2ccc2bfc-12ad-47cf-8e07-8b7782af8fd9
+status: experimental
+description: |
+  Detects chmod adding the setuid or setgid bit, in symbolic (u+s, g+s, +s) or octal
+  (4xxx, 2xxx, 6xxx) form. A setuid copy of a shell or interpreter is a classic way back
+  to root. Everyday permission changes such as chmod +x or chmod 755 do not match.
+references:
+  - https://attack.mitre.org/techniques/T1548/001/
+author: Raghav Kuinkel
+date: 2026-10-24
+tags:
+  - attack.privilege-escalation
+  - attack.defense-evasion
+  - attack.t1548.001
+logsource:
+  product: linux
+  category: process_creation
+detection:
+  selection_img:
+    Image|endswith: '/chmod'
+  selection_symbolic:
+    CommandLine|contains:
+      - 'u+s'
+      - 'g+s'
+      - 'ug+s'
+      - ' +s '
+      - 'a+s'
+  selection_octal:
+    CommandLine|re: '(^|/|\s)chmod\s+(-\S+\s+)*0?[246][0-7]{3}\s'
+  condition: selection_img and (selection_symbolic or selection_octal)
+falsepositives:
+  - Package installs and admins fixing permissions on known setuid tools such as sudo or ping.
+level: high

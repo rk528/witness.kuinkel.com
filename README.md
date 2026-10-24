@@ -2,7 +2,7 @@
 
 **Detections that have to prove themselves.** Live coverage: https://witness.kuinkel.com
 
-Witness is a detection-as-code repository of [Sigma](https://sigmahq.io) rules for Windows.
+Witness is a detection-as-code repository of [Sigma](https://sigmahq.io) rules for Windows and Linux.
 A rule is not trusted because it looks right. It is trusted because CI shows, on every
 commit, that it:
 
@@ -20,13 +20,18 @@ standing up a SIEM.
 
 ## Rules
 
-| Rule | ATT&CK | Level |
-| --- | --- | --- |
-| LSASS memory dump via comsvcs.dll MiniDump | T1003.001 | high |
-| PowerShell launched with an encoded command | T1059.001, T1027 | medium |
-| File download with certutil | T1105 | high |
-| Scheduled task created to run from a user-writable folder | T1053.005 | medium |
-| Shadow copies or backup catalog deleted | T1490 | high |
+| Platform | Rule | ATT&CK | Level |
+| --- | --- | --- | --- |
+| Windows | LSASS memory dump via comsvcs.dll MiniDump | T1003.001 | high |
+| Windows | PowerShell launched with an encoded command | T1059.001, T1027 | medium |
+| Windows | File download with certutil | T1105 | high |
+| Windows | Scheduled task created to run from a user-writable folder | T1053.005 | medium |
+| Windows | Shadow copies or backup catalog deleted | T1490 | high |
+| Linux | Setuid or setgid bit set with chmod | T1548.001 | high |
+| Linux | Shell history file deleted or emptied | T1070.003 | medium |
+| Linux | Crontab installed from a temporary folder | T1053.003 | medium |
+| Linux | Interactive shell redirected over /dev/tcp | T1059.004 | high |
+| Linux | SSH authorized_keys written from the command line | T1098.004 | medium |
 
 The status of each rule (proven in the lab, or awaiting capture) is on the
 [coverage page](https://witness.kuinkel.com).
@@ -39,7 +44,8 @@ evidence/    per rule: benign.jsonl, and once captured attack.jsonl + capture.js
 queries/     generated Sentinel, Defender XDR and Splunk queries (committed)
 site/        generated coverage page, deployed to witness.kuinkel.com
 witness/     the evaluator, test suite, converters and page renderer
-scripts/     capture.ps1, which records attack evidence in the lab
+scripts/     capture.ps1 (Windows) and capture.sh (Linux), which record attack evidence
+lab/         lab VM configuration, such as the Sysmon for Linux config
 ```
 
 ## Use it
@@ -67,7 +73,8 @@ page no longer match the rules.
 
 - pySigma's ASIM pipeline maps `OriginalFileName` to a column that `imProcessCreate` does
   not have and then rejects its own output. `witness/convert.py` maps the field first.
-- Evidence events use Sysmon field names, which match Sigma's `process_creation` taxonomy.
+- Evidence events use Sysmon field names (Sysmon for Linux on Ubuntu), which match Sigma's
+  `process_creation` taxonomy. Linux Splunk queries are scoped to `sourcetype="sysmon:linux"`.
 
 ## License
 

@@ -1,0 +1,2 @@
+DeviceProcessEvents
+| where ProcessCommandLine contains "authorized_keys" and ((ProcessCommandLine contains ">>" or ProcessCommandLine contains "> " or ProcessCommandLine contains "tee " or ProcessCommandLine contains "sed -i") or (FolderPath endswith "/cp" or FolderPath endswith "/mv" or FolderPath endswith "/install"))

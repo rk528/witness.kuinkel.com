@@ -1,0 +1,4 @@
+sourcetype="sysmon:linux" EventCode=1 Image="*/chmod"
+| rex field=CommandLine "(?<CommandLineMatch>(^|/|\\s)chmod\\s+(-\\S+\\s+)*0?[246][0-7]{3}\\s)"
+| eval CommandLineCondition=if(isnotnull(CommandLineMatch), "true", "false")
+| search CommandLine IN ("*u+s*", "*g+s*", "*ug+s*", "* +s *", "*a+s*") OR CommandLineCondition="true"

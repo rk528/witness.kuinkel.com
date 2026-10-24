@@ -106,3 +106,18 @@ def test_field_names_fall_back_to_case_insensitive():
 def test_keywords_search_every_field():
     assert matches(rule("  keywords:\n    - 'todo.txt'\n  condition: keywords\n"), NOTEPAD)
     assert not matches(rule("  keywords:\n    - 'absent'\n  condition: keywords\n"), NOTEPAD)
+
+
+def test_chmod_rule_octal_branch():
+    from witness.suite import RULES_DIR
+
+    chmod = SigmaRule.from_yaml(
+        (RULES_DIR / "linux" / "process_creation" / "proc_creation_lnx_chmod_setuid.yml").read_text(encoding="utf-8")
+    )
+    def fires(cmd):
+        return matches(chmod, {"Image": "/usr/bin/chmod", "CommandLine": cmd})
+
+    assert fires("chmod 4755 /usr/local/bin/helper")
+    assert fires("/usr/bin/chmod -v 2775 /srv/shared ")
+    assert not fires("chmod 0755 /usr/local/bin/helper")
+    assert not fires("chmod 644 notes.txt")

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Witness: detections that prove themselves</title>
-<meta name="description" content="Open-source Sigma detection rules for Windows. Each rule is tested in CI against attacks recorded in a lab and against look-alike normal activity, then translated for Sentinel, Defender XDR and Splunk.">
+<meta name="description" content="Open-source Sigma detection rules for Windows and Linux. Each rule is tested in CI against attacks recorded in a lab and against look-alike normal activity, then translated for Sentinel, Defender XDR and Splunk.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,16 +21,16 @@
     <p class="eyebrow">Detection as code</p>
     <h1>Detections that have to <em>prove</em> themselves.</h1>
     <p class="lede">Every rule here is checked on every commit: it must catch an attack recorded in
-      a Windows lab and stay quiet on look-alike normal activity. Rules that pass are translated
+      a Windows or Linux lab VM and stay quiet on look-alike normal activity. Rules that pass are translated
       for Microsoft Sentinel, Defender XDR and Splunk.</p>
   </section>
 
   <section class="stats" aria-label="Summary">
-    <div><strong>5</strong><span>rules</span></div>
-    <div><strong>6</strong><span>ATT&amp;CK techniques</span></div>
+    <div><strong>10</strong><span>rules for Windows and Linux</span></div>
+    <div><strong>11</strong><span>ATT&amp;CK techniques</span></div>
     <div><strong>0</strong><span>proven in the lab</span></div>
-    <div><strong>5</strong><span>awaiting lab capture</span></div>
-    <div><strong>18/18</strong><span>normal events left alone</span></div>
+    <div><strong>10</strong><span>awaiting lab capture</span></div>
+    <div><strong>37/37</strong><span>normal events left alone</span></div>
   </section>
 
   <section class="how">
@@ -42,16 +42,94 @@
   <section id="coverage">
     <h2 class="section">Coverage across ATT&amp;CK tactics</h2>
     <p class="legend"><span class="chip proven">Proven</span><span class="chip awaiting">Awaiting capture</span><span class="chip failing">Failing</span></p>
-    <div class="matrix"><div class="tactic none"><h3>Reconnaissance</h3><span class="empty">No rules yet</span></div><div class="tactic none"><h3>Resource Development</h3><span class="empty">No rules yet</span></div><div class="tactic none"><h3>Initial Access</h3><span class="empty">No rules yet</span></div><div class="tactic"><h3>Execution</h3><a class="chip awaiting" href="#proc_creation_win_powershell_encoded_command" title="PowerShell Launched With an Encoded Command">T1059.001</a><a class="chip awaiting" href="#proc_creation_win_powershell_encoded_command" title="PowerShell Launched With an Encoded Command">T1027</a><a class="chip awaiting" href="#proc_creation_win_schtasks_user_writable_path" title="Scheduled Task Created to Run From a User-Writable Folder">T1053.005</a></div><div class="tactic"><h3>Persistence</h3><a class="chip awaiting" href="#proc_creation_win_schtasks_user_writable_path" title="Scheduled Task Created to Run From a User-Writable Folder">T1053.005</a></div><div class="tactic none"><h3>Privilege Escalation</h3><span class="empty">No rules yet</span></div><div class="tactic"><h3>Defense Evasion</h3><a class="chip awaiting" href="#proc_creation_win_powershell_encoded_command" title="PowerShell Launched With an Encoded Command">T1059.001</a><a class="chip awaiting" href="#proc_creation_win_powershell_encoded_command" title="PowerShell Launched With an Encoded Command">T1027</a></div><div class="tactic"><h3>Credential Access</h3><a class="chip awaiting" href="#proc_creation_win_lsass_dump_comsvcs" title="LSASS Memory Dump via comsvcs.dll MiniDump">T1003.001</a></div><div class="tactic none"><h3>Discovery</h3><span class="empty">No rules yet</span></div><div class="tactic none"><h3>Lateral Movement</h3><span class="empty">No rules yet</span></div><div class="tactic none"><h3>Collection</h3><span class="empty">No rules yet</span></div><div class="tactic"><h3>Command and Control</h3><a class="chip awaiting" href="#proc_creation_win_certutil_download" title="File Download With certutil">T1105</a></div><div class="tactic none"><h3>Exfiltration</h3><span class="empty">No rules yet</span></div><div class="tactic"><h3>Impact</h3><a class="chip awaiting" href="#proc_creation_win_shadow_copy_deletion" title="Shadow Copies or Backup Catalog Deleted">T1490</a></div></div>
+    <div class="matrix"><div class="tactic none"><h3>Reconnaissance</h3><span class="empty">No rules yet</span></div><div class="tactic none"><h3>Resource Development</h3><span class="empty">No rules yet</span></div><div class="tactic none"><h3>Initial Access</h3><span class="empty">No rules yet</span></div><div class="tactic"><h3>Execution</h3><a class="chip awaiting" href="#proc_creation_lnx_crontab_from_temp" title="Crontab Installed From a Temporary Folder">T1053.003</a><a class="chip awaiting" href="#proc_creation_lnx_reverse_shell_dev_tcp" title="Interactive Shell Redirected Over /dev/tcp">T1059.004</a><a class="chip awaiting" href="#proc_creation_win_powershell_encoded_command" title="PowerShell Launched With an Encoded Command">T1059.001</a><a class="chip awaiting" href="#proc_creation_win_powershell_encoded_command" title="PowerShell Launched With an Encoded Command">T1027</a><a class="chip awaiting" href="#proc_creation_win_schtasks_user_writable_path" title="Scheduled Task Created to Run From a User-Writable Folder">T1053.005</a></div><div class="tactic"><h3>Persistence</h3><a class="chip awaiting" href="#proc_creation_lnx_crontab_from_temp" title="Crontab Installed From a Temporary Folder">T1053.003</a><a class="chip awaiting" href="#proc_creation_lnx_ssh_authorized_keys_write" title="SSH authorized_keys Written From the Command Line">T1098.004</a><a class="chip awaiting" href="#proc_creation_win_schtasks_user_writable_path" title="Scheduled Task Created to Run From a User-Writable Folder">T1053.005</a></div><div class="tactic"><h3>Privilege Escalation</h3><a class="chip awaiting" href="#proc_creation_lnx_chmod_setuid" title="Setuid or Setgid Bit Set With chmod">T1548.001</a></div><div class="tactic"><h3>Defense Evasion</h3><a class="chip awaiting" href="#proc_creation_lnx_chmod_setuid" title="Setuid or Setgid Bit Set With chmod">T1548.001</a><a class="chip awaiting" href="#proc_creation_lnx_clear_shell_history" title="Shell History File Deleted or Emptied">T1070.003</a><a class="chip awaiting" href="#proc_creation_win_powershell_encoded_command" title="PowerShell Launched With an Encoded Command">T1059.001</a><a class="chip awaiting" href="#proc_creation_win_powershell_encoded_command" title="PowerShell Launched With an Encoded Command">T1027</a></div><div class="tactic"><h3>Credential Access</h3><a class="chip awaiting" href="#proc_creation_win_lsass_dump_comsvcs" title="LSASS Memory Dump via comsvcs.dll MiniDump">T1003.001</a></div><div class="tactic none"><h3>Discovery</h3><span class="empty">No rules yet</span></div><div class="tactic none"><h3>Lateral Movement</h3><span class="empty">No rules yet</span></div><div class="tactic none"><h3>Collection</h3><span class="empty">No rules yet</span></div><div class="tactic"><h3>Command and Control</h3><a class="chip awaiting" href="#proc_creation_win_certutil_download" title="File Download With certutil">T1105</a></div><div class="tactic none"><h3>Exfiltration</h3><span class="empty">No rules yet</span></div><div class="tactic"><h3>Impact</h3><a class="chip awaiting" href="#proc_creation_win_shadow_copy_deletion" title="Shadow Copies or Backup Catalog Deleted">T1490</a></div></div>
   </section>
 
   <section id="rules">
     <h2 class="section">Rules</h2>
     
+<details class="rule" id="proc_creation_lnx_chmod_setuid">
+  <summary>
+    <span class="title">Setuid or Setgid Bit Set With chmod</span>
+    <span class="meta"><span class="platform">Linux</span> <a href="https://attack.mitre.org/techniques/T1548/001/" rel="noopener">T1548.001</a> <span class="level high">high</span> <span class="badge awaiting">Awaiting lab capture</span></span>
+  </summary>
+  <div class="body">
+    <p>Detects chmod adding the setuid or setgid bit, in symbolic (u+s, g+s, +s) or octal (4xxx, 2xxx, 6xxx) form. A setuid copy of a shell or interpreter is a classic way back to root. Everyday permission changes such as chmod +x or chmod 755 do not match. </p>
+    <p class="links"><a href="https://github.com/rk528/witness.kuinkel.com/blob/main/rules/linux/process_creation/proc_creation_lnx_chmod_setuid.yml">Sigma rule</a> ·
+      <a href="https://github.com/rk528/witness.kuinkel.com/tree/main/evidence/proc_creation_lnx_chmod_setuid">Evidence</a></p>
+    <h4>Recorded attack it must catch</h4><p class="muted">Not recorded yet. The rule only counts as proven once <code>scripts/capture.ps1</code> has recorded the real attack in the lab and the rule fires on every recorded test.</p><h4>Normal activity it must ignore</h4><div class="table"><table><thead><tr><th>Result</th><th>Scenario</th><th>Command line</th></tr></thead><tbody><tr><td class="ok">Quiet</td><td>Making a script executable</td><td><code>chmod +x deploy.sh</code></td></tr><tr><td class="ok">Quiet</td><td>Owner-only execute bit (u+x, not u+s)</td><td><code>chmod u+x build.sh</code></td></tr><tr><td class="ok">Quiet</td><td>Standard 755 on an app script</td><td><code>chmod 755 /opt/app/run.sh</code></td></tr><tr><td class="ok">Quiet</td><td>Recursive 0750 on a data folder</td><td><code>chmod -R 0750 /srv/data</code></td></tr><tr><td class="ok">Quiet</td><td>Config file to 644</td><td><code>chmod 644 /etc/nginx/nginx.conf</code></td></tr></tbody></table></div>
+    <h4>Ready-to-run queries</h4><h5>Microsoft Sentinel (ASIM, KQL)</h5><pre><code>imProcessCreate
+| where TargetProcessName endswith &quot;/chmod&quot; and ((TargetProcessCommandLine contains &quot;u+s&quot; or TargetProcessCommandLine contains &quot;g+s&quot; or TargetProcessCommandLine contains &quot;ug+s&quot; or TargetProcessCommandLine contains &quot; +s &quot; or TargetProcessCommandLine contains &quot;a+s&quot;) or TargetProcessCommandLine matches regex &quot;(^|/|\\s)chmod\\s+(-\\S+\\s+)*0?[246][0-7]{3}\\s&quot;)</code></pre><h5>Microsoft Defender XDR (KQL)</h5><pre><code>DeviceProcessEvents
+| where FolderPath endswith &quot;/chmod&quot; and ((ProcessCommandLine contains &quot;u+s&quot; or ProcessCommandLine contains &quot;g+s&quot; or ProcessCommandLine contains &quot;ug+s&quot; or ProcessCommandLine contains &quot; +s &quot; or ProcessCommandLine contains &quot;a+s&quot;) or ProcessCommandLine matches regex &quot;(^|/|\\s)chmod\\s+(-\\S+\\s+)*0?[246][0-7]{3}\\s&quot;)</code></pre><h5>Splunk (Sysmon, SPL)</h5><pre><code>sourcetype=&quot;sysmon:linux&quot; EventCode=1 Image=&quot;*/chmod&quot;
+| rex field=CommandLine &quot;(?&lt;CommandLineMatch&gt;(^|/|\\s)chmod\\s+(-\\S+\\s+)*0?[246][0-7]{3}\\s)&quot;
+| eval CommandLineCondition=if(isnotnull(CommandLineMatch), &quot;true&quot;, &quot;false&quot;)
+| search CommandLine IN (&quot;*u+s*&quot;, &quot;*g+s*&quot;, &quot;*ug+s*&quot;, &quot;* +s *&quot;, &quot;*a+s*&quot;) OR CommandLineCondition=&quot;true&quot;</code></pre>
+  </div>
+</details>
+<details class="rule" id="proc_creation_lnx_clear_shell_history">
+  <summary>
+    <span class="title">Shell History File Deleted or Emptied</span>
+    <span class="meta"><span class="platform">Linux</span> <a href="https://attack.mitre.org/techniques/T1070/003/" rel="noopener">T1070.003</a> <span class="level medium">medium</span> <span class="badge awaiting">Awaiting lab capture</span></span>
+  </summary>
+  <div class="body">
+    <p>Detects rm, shred, truncate or ln being pointed at a shell history file. Wiping .bash_history or linking it to /dev/null is how intruders hide the commands they ran. Reading the file (cat, less, grep) is ignored, so analysts reviewing history stay quiet. </p>
+    <p class="links"><a href="https://github.com/rk528/witness.kuinkel.com/blob/main/rules/linux/process_creation/proc_creation_lnx_clear_shell_history.yml">Sigma rule</a> ·
+      <a href="https://github.com/rk528/witness.kuinkel.com/tree/main/evidence/proc_creation_lnx_clear_shell_history">Evidence</a></p>
+    <h4>Recorded attack it must catch</h4><p class="muted">Not recorded yet. The rule only counts as proven once <code>scripts/capture.ps1</code> has recorded the real attack in the lab and the rule fires on every recorded test.</p><h4>Normal activity it must ignore</h4><div class="table"><table><thead><tr><th>Result</th><th>Scenario</th><th>Command line</th></tr></thead><tbody><tr><td class="ok">Quiet</td><td>Reading shell history</td><td><code>cat /home/raghav/.bash_history</code></td></tr><tr><td class="ok">Quiet</td><td>Searching shell history</td><td><code>grep sudo /home/raghav/.bash_history</code></td></tr><tr><td class="ok">Quiet</td><td>Deleting an old log file</td><td><code>rm /home/raghav/.cache/old.log</code></td></tr><tr><td class="ok">Quiet</td><td>Enabling an nginx site with a symlink</td><td><code>ln -s /etc/nginx/sites-available/app /etc/nginx/sites-enabled/app</code></td></tr></tbody></table></div>
+    <h4>Ready-to-run queries</h4><h5>Microsoft Sentinel (ASIM, KQL)</h5><pre><code>imProcessCreate
+| where (TargetProcessName endswith &quot;/rm&quot; or TargetProcessName endswith &quot;/shred&quot; or TargetProcessName endswith &quot;/truncate&quot; or TargetProcessName endswith &quot;/ln&quot;) and (TargetProcessCommandLine contains &quot;.bash_history&quot; or TargetProcessCommandLine contains &quot;.zsh_history&quot; or TargetProcessCommandLine contains &quot;.sh_history&quot; or TargetProcessCommandLine contains &quot;.history&quot;)</code></pre><h5>Microsoft Defender XDR (KQL)</h5><pre><code>DeviceProcessEvents
+| where (FolderPath endswith &quot;/rm&quot; or FolderPath endswith &quot;/shred&quot; or FolderPath endswith &quot;/truncate&quot; or FolderPath endswith &quot;/ln&quot;) and (ProcessCommandLine contains &quot;.bash_history&quot; or ProcessCommandLine contains &quot;.zsh_history&quot; or ProcessCommandLine contains &quot;.sh_history&quot; or ProcessCommandLine contains &quot;.history&quot;)</code></pre><h5>Splunk (Sysmon, SPL)</h5><pre><code>sourcetype=&quot;sysmon:linux&quot; EventCode=1 Image IN (&quot;*/rm&quot;, &quot;*/shred&quot;, &quot;*/truncate&quot;, &quot;*/ln&quot;) CommandLine IN (&quot;*.bash_history*&quot;, &quot;*.zsh_history*&quot;, &quot;*.sh_history*&quot;, &quot;*.history*&quot;)</code></pre>
+  </div>
+</details>
+<details class="rule" id="proc_creation_lnx_crontab_from_temp">
+  <summary>
+    <span class="title">Crontab Installed From a Temporary Folder</span>
+    <span class="meta"><span class="platform">Linux</span> <a href="https://attack.mitre.org/techniques/T1053/003/" rel="noopener">T1053.003</a> <span class="level medium">medium</span> <span class="badge awaiting">Awaiting lab capture</span></span>
+  </summary>
+  <div class="body">
+    <p>Detects crontab loading a whole new table from a file in /tmp, /var/tmp or /dev/shm. Malware writes its schedule to a world-writable folder and installs it in one step for persistence. Editing with crontab -e or listing with -l never names such a file. </p>
+    <p class="links"><a href="https://github.com/rk528/witness.kuinkel.com/blob/main/rules/linux/process_creation/proc_creation_lnx_crontab_from_temp.yml">Sigma rule</a> ·
+      <a href="https://github.com/rk528/witness.kuinkel.com/tree/main/evidence/proc_creation_lnx_crontab_from_temp">Evidence</a></p>
+    <h4>Recorded attack it must catch</h4><p class="muted">Not recorded yet. The rule only counts as proven once <code>scripts/capture.ps1</code> has recorded the real attack in the lab and the rule fires on every recorded test.</p><h4>Normal activity it must ignore</h4><div class="table"><table><thead><tr><th>Result</th><th>Scenario</th><th>Command line</th></tr></thead><tbody><tr><td class="ok">Quiet</td><td>Listing the crontab</td><td><code>crontab -l</code></td></tr><tr><td class="ok">Quiet</td><td>Editing the crontab</td><td><code>crontab -e</code></td></tr><tr><td class="ok">Quiet</td><td>Installing a crontab from a file in the home folder</td><td><code>crontab /home/raghav/backup.cron</code></td></tr></tbody></table></div>
+    <h4>Ready-to-run queries</h4><h5>Microsoft Sentinel (ASIM, KQL)</h5><pre><code>imProcessCreate
+| where TargetProcessName endswith &quot;/crontab&quot; and (TargetProcessCommandLine contains &quot; /tmp/&quot; or TargetProcessCommandLine contains &quot; /var/tmp/&quot; or TargetProcessCommandLine contains &quot; /dev/shm/&quot;)</code></pre><h5>Microsoft Defender XDR (KQL)</h5><pre><code>DeviceProcessEvents
+| where FolderPath endswith &quot;/crontab&quot; and (ProcessCommandLine contains &quot; /tmp/&quot; or ProcessCommandLine contains &quot; /var/tmp/&quot; or ProcessCommandLine contains &quot; /dev/shm/&quot;)</code></pre><h5>Splunk (Sysmon, SPL)</h5><pre><code>sourcetype=&quot;sysmon:linux&quot; EventCode=1 Image=&quot;*/crontab&quot; CommandLine IN (&quot;* /tmp/*&quot;, &quot;* /var/tmp/*&quot;, &quot;* /dev/shm/*&quot;)</code></pre>
+  </div>
+</details>
+<details class="rule" id="proc_creation_lnx_reverse_shell_dev_tcp">
+  <summary>
+    <span class="title">Interactive Shell Redirected Over /dev/tcp</span>
+    <span class="meta"><span class="platform">Linux</span> <a href="https://attack.mitre.org/techniques/T1059/004/" rel="noopener">T1059.004</a> <span class="level high">high</span> <span class="badge awaiting">Awaiting lab capture</span></span>
+  </summary>
+  <div class="body">
+    <p>Detects a command line that opens a bash /dev/tcp or /dev/udp socket and redirects the shell&#x27;s input or output through it, the shape of a reverse shell. Opening /dev/tcp on its own is a common port check in health scripts, so the rule also requires a file descriptor redirection (&gt;&amp;, &lt;&amp;) before it fires. </p>
+    <p class="links"><a href="https://github.com/rk528/witness.kuinkel.com/blob/main/rules/linux/process_creation/proc_creation_lnx_reverse_shell_dev_tcp.yml">Sigma rule</a> ·
+      <a href="https://github.com/rk528/witness.kuinkel.com/tree/main/evidence/proc_creation_lnx_reverse_shell_dev_tcp">Evidence</a></p>
+    <h4>Recorded attack it must catch</h4><p class="muted">Not recorded yet. The rule only counts as proven once <code>scripts/capture.ps1</code> has recorded the real attack in the lab and the rule fires on every recorded test.</p><h4>Normal activity it must ignore</h4><div class="table"><table><thead><tr><th>Result</th><th>Scenario</th><th>Command line</th></tr></thead><tbody><tr><td class="ok">Quiet</td><td>Health check opening /dev/tcp without redirecting the shell</td><td><code>bash -c &quot;timeout 1 bash -c &#x27;&lt;/dev/tcp/db.lab.local/5432&#x27; &amp;&amp; echo open&quot;</code></td></tr><tr><td class="ok">Quiet</td><td>Script merging stderr into stdout (&gt;&amp; without a socket)</td><td><code>bash -c &quot;pg_isready -h db.lab.local 2&gt;&amp;1&quot;</code></td></tr><tr><td class="ok">Quiet</td><td>Port check with netcat</td><td><code>nc -zv db.lab.local 5432</code></td></tr></tbody></table></div>
+    <h4>Ready-to-run queries</h4><h5>Microsoft Sentinel (ASIM, KQL)</h5><pre><code>imProcessCreate
+| where (TargetProcessCommandLine contains &quot;/dev/tcp/&quot; or TargetProcessCommandLine contains &quot;/dev/udp/&quot;) and (TargetProcessCommandLine contains &quot;&gt;&amp;&quot; or TargetProcessCommandLine contains &quot;&lt;&amp;&quot;)</code></pre><h5>Microsoft Defender XDR (KQL)</h5><pre><code>DeviceProcessEvents
+| where (ProcessCommandLine contains &quot;/dev/tcp/&quot; or ProcessCommandLine contains &quot;/dev/udp/&quot;) and (ProcessCommandLine contains &quot;&gt;&amp;&quot; or ProcessCommandLine contains &quot;&lt;&amp;&quot;)</code></pre><h5>Splunk (Sysmon, SPL)</h5><pre><code>sourcetype=&quot;sysmon:linux&quot; EventCode=1 CommandLine IN (&quot;*/dev/tcp/*&quot;, &quot;*/dev/udp/*&quot;) CommandLine IN (&quot;*&gt;&amp;*&quot;, &quot;*&lt;&amp;*&quot;)</code></pre>
+  </div>
+</details>
+<details class="rule" id="proc_creation_lnx_ssh_authorized_keys_write">
+  <summary>
+    <span class="title">SSH authorized_keys Written From the Command Line</span>
+    <span class="meta"><span class="platform">Linux</span> <a href="https://attack.mitre.org/techniques/T1098/004/" rel="noopener">T1098.004</a> <span class="level medium">medium</span> <span class="badge awaiting">Awaiting lab capture</span></span>
+  </summary>
+  <div class="body">
+    <p>Detects a command that appends to, copies over or edits an authorized_keys file in place. Adding a key there gives an intruder a quiet way back in that survives password changes. Reading the file or fixing its permissions does not match. </p>
+    <p class="links"><a href="https://github.com/rk528/witness.kuinkel.com/blob/main/rules/linux/process_creation/proc_creation_lnx_ssh_authorized_keys_write.yml">Sigma rule</a> ·
+      <a href="https://github.com/rk528/witness.kuinkel.com/tree/main/evidence/proc_creation_lnx_ssh_authorized_keys_write">Evidence</a></p>
+    <h4>Recorded attack it must catch</h4><p class="muted">Not recorded yet. The rule only counts as proven once <code>scripts/capture.ps1</code> has recorded the real attack in the lab and the rule fires on every recorded test.</p><h4>Normal activity it must ignore</h4><div class="table"><table><thead><tr><th>Result</th><th>Scenario</th><th>Command line</th></tr></thead><tbody><tr><td class="ok">Quiet</td><td>Reading authorized_keys</td><td><code>cat /home/raghav/.ssh/authorized_keys</code></td></tr><tr><td class="ok">Quiet</td><td>Fixing authorized_keys permissions</td><td><code>chmod 600 /home/raghav/.ssh/authorized_keys</code></td></tr><tr><td class="ok">Quiet</td><td>Listing key fingerprints</td><td><code>ssh-keygen -lf /home/raghav/.ssh/authorized_keys</code></td></tr><tr><td class="ok">Quiet</td><td>Counting ed25519 keys</td><td><code>grep -c ssh-ed25519 /home/raghav/.ssh/authorized_keys</code></td></tr></tbody></table></div>
+    <h4>Ready-to-run queries</h4><h5>Microsoft Sentinel (ASIM, KQL)</h5><pre><code>imProcessCreate
+| where TargetProcessCommandLine contains &quot;authorized_keys&quot; and ((TargetProcessCommandLine contains &quot;&gt;&gt;&quot; or TargetProcessCommandLine contains &quot;&gt; &quot; or TargetProcessCommandLine contains &quot;tee &quot; or TargetProcessCommandLine contains &quot;sed -i&quot;) or (TargetProcessName endswith &quot;/cp&quot; or TargetProcessName endswith &quot;/mv&quot; or TargetProcessName endswith &quot;/install&quot;))</code></pre><h5>Microsoft Defender XDR (KQL)</h5><pre><code>DeviceProcessEvents
+| where ProcessCommandLine contains &quot;authorized_keys&quot; and ((ProcessCommandLine contains &quot;&gt;&gt;&quot; or ProcessCommandLine contains &quot;&gt; &quot; or ProcessCommandLine contains &quot;tee &quot; or ProcessCommandLine contains &quot;sed -i&quot;) or (FolderPath endswith &quot;/cp&quot; or FolderPath endswith &quot;/mv&quot; or FolderPath endswith &quot;/install&quot;))</code></pre><h5>Splunk (Sysmon, SPL)</h5><pre><code>sourcetype=&quot;sysmon:linux&quot; EventCode=1 CommandLine=&quot;*authorized_keys*&quot; CommandLine IN (&quot;*&gt;&gt;*&quot;, &quot;*&gt; *&quot;, &quot;*tee *&quot;, &quot;*sed -i*&quot;) OR Image IN (&quot;*/cp&quot;, &quot;*/mv&quot;, &quot;*/install&quot;)</code></pre>
+  </div>
+</details>
 <details class="rule" id="proc_creation_win_certutil_download">
   <summary>
     <span class="title">File Download With certutil</span>
-    <span class="meta"><a href="https://attack.mitre.org/techniques/T1105/" rel="noopener">T1105</a> <span class="level high">high</span> <span class="badge awaiting">Awaiting lab capture</span></span>
+    <span class="meta"><span class="platform">Windows</span> <a href="https://attack.mitre.org/techniques/T1105/" rel="noopener">T1105</a> <span class="level high">high</span> <span class="badge awaiting">Awaiting lab capture</span></span>
   </summary>
   <div class="body">
     <p>Detects certutil.exe fetching a remote URL with -urlcache or -verifyctl. certutil is signed by Microsoft and present on every Windows host, so it is a favourite way to pull a second stage past application allow-listing. Requiring a URL scheme keeps routine cache maintenance such as &quot;certutil -urlcache * delete&quot; quiet. </p>
@@ -66,7 +144,7 @@
 <details class="rule" id="proc_creation_win_lsass_dump_comsvcs">
   <summary>
     <span class="title">LSASS Memory Dump via comsvcs.dll MiniDump</span>
-    <span class="meta"><a href="https://attack.mitre.org/techniques/T1003/001/" rel="noopener">T1003.001</a> <span class="level high">high</span> <span class="badge awaiting">Awaiting lab capture</span></span>
+    <span class="meta"><span class="platform">Windows</span> <a href="https://attack.mitre.org/techniques/T1003/001/" rel="noopener">T1003.001</a> <span class="level high">high</span> <span class="badge awaiting">Awaiting lab capture</span></span>
   </summary>
   <div class="body">
     <p>Detects rundll32 calling the MiniDump export of comsvcs.dll, a built-in way to dump LSASS memory without bringing any tools. Attackers often call the export by its ordinal (#24) to dodge string matches, so both forms are covered. The OriginalFileName branch still fires when rundll32.exe has been copied and renamed. </p>
@@ -81,7 +159,7 @@
 <details class="rule" id="proc_creation_win_powershell_encoded_command">
   <summary>
     <span class="title">PowerShell Launched With an Encoded Command</span>
-    <span class="meta"><a href="https://attack.mitre.org/techniques/T1059/001/" rel="noopener">T1059.001</a> <a href="https://attack.mitre.org/techniques/T1027/" rel="noopener">T1027</a> <span class="level medium">medium</span> <span class="badge awaiting">Awaiting lab capture</span></span>
+    <span class="meta"><span class="platform">Windows</span> <a href="https://attack.mitre.org/techniques/T1059/001/" rel="noopener">T1059.001</a> <a href="https://attack.mitre.org/techniques/T1027/" rel="noopener">T1027</a> <span class="level medium">medium</span> <span class="badge awaiting">Awaiting lab capture</span></span>
   </summary>
   <div class="body">
     <p>Detects powershell.exe or pwsh.exe started with -EncodedCommand or one of its short forms. Encoding hides the real script from command-line logging, which is why loaders and C2 stagers use it. The flag list deliberately leaves out &quot;-enco&quot;: it also matches &quot;-Encoding&quot; inside ordinary -Command scripts and was the main source of noise. </p>
@@ -96,7 +174,7 @@
 <details class="rule" id="proc_creation_win_schtasks_user_writable_path">
   <summary>
     <span class="title">Scheduled Task Created to Run From a User-Writable Folder</span>
-    <span class="meta"><a href="https://attack.mitre.org/techniques/T1053/005/" rel="noopener">T1053.005</a> <span class="level medium">medium</span> <span class="badge awaiting">Awaiting lab capture</span></span>
+    <span class="meta"><span class="platform">Windows</span> <a href="https://attack.mitre.org/techniques/T1053/005/" rel="noopener">T1053.005</a> <span class="level medium">medium</span> <span class="badge awaiting">Awaiting lab capture</span></span>
   </summary>
   <div class="body">
     <p>Detects schtasks /create where the task runs something out of Temp, Public or the roaming profile. Malware drops its payload where any user can write and then adds a task for persistence. AppData\Local as a whole is left out on purpose: OneDrive, Teams and other per-user updaters legitimately schedule tasks from there. </p>
@@ -111,7 +189,7 @@
 <details class="rule" id="proc_creation_win_shadow_copy_deletion">
   <summary>
     <span class="title">Shadow Copies or Backup Catalog Deleted</span>
-    <span class="meta"><a href="https://attack.mitre.org/techniques/T1490/" rel="noopener">T1490</a> <span class="level high">high</span> <span class="badge awaiting">Awaiting lab capture</span></span>
+    <span class="meta"><span class="platform">Windows</span> <a href="https://attack.mitre.org/techniques/T1490/" rel="noopener">T1490</a> <span class="level high">high</span> <span class="badge awaiting">Awaiting lab capture</span></span>
   </summary>
   <div class="body">
     <p>Detects the commands ransomware runs just before encrypting, to stop the victim rolling back: deleting Volume Shadow Copies with vssadmin, wmic or PowerShell, deleting the Windows Backup catalog, and turning off boot recovery with bcdedit. Read-only commands such as &quot;vssadmin list shadows&quot; or &quot;bcdedit /enum&quot; do not match. </p>

@@ -1,9 +1,132 @@
 {
   "rules": [
     {
+      "id": "2ccc2bfc-12ad-47cf-8e07-8b7782af8fd9",
+      "title": "Setuid or Setgid Bit Set With chmod",
+      "file": "rules/linux/process_creation/proc_creation_lnx_chmod_setuid.yml",
+      "platform": "Linux",
+      "level": "high",
+      "tactics": [
+        "privilege-escalation",
+        "defense-evasion"
+      ],
+      "techniques": [
+        "T1548.001"
+      ],
+      "status": "awaiting",
+      "attack": {
+        "events": 0,
+        "tests_run": [],
+        "tests_detected": []
+      },
+      "benign": {
+        "events": 5,
+        "fired": 0
+      },
+      "capture": null
+    },
+    {
+      "id": "b7898949-af09-4726-a843-8ef0433040de",
+      "title": "Shell History File Deleted or Emptied",
+      "file": "rules/linux/process_creation/proc_creation_lnx_clear_shell_history.yml",
+      "platform": "Linux",
+      "level": "medium",
+      "tactics": [
+        "defense-evasion"
+      ],
+      "techniques": [
+        "T1070.003"
+      ],
+      "status": "awaiting",
+      "attack": {
+        "events": 0,
+        "tests_run": [],
+        "tests_detected": []
+      },
+      "benign": {
+        "events": 4,
+        "fired": 0
+      },
+      "capture": null
+    },
+    {
+      "id": "329ecd7c-603c-4b7a-a98d-a92d0144ec07",
+      "title": "Crontab Installed From a Temporary Folder",
+      "file": "rules/linux/process_creation/proc_creation_lnx_crontab_from_temp.yml",
+      "platform": "Linux",
+      "level": "medium",
+      "tactics": [
+        "persistence",
+        "execution"
+      ],
+      "techniques": [
+        "T1053.003"
+      ],
+      "status": "awaiting",
+      "attack": {
+        "events": 0,
+        "tests_run": [],
+        "tests_detected": []
+      },
+      "benign": {
+        "events": 3,
+        "fired": 0
+      },
+      "capture": null
+    },
+    {
+      "id": "c8d7b092-97c6-4d30-844e-6f7f91714484",
+      "title": "Interactive Shell Redirected Over /dev/tcp",
+      "file": "rules/linux/process_creation/proc_creation_lnx_reverse_shell_dev_tcp.yml",
+      "platform": "Linux",
+      "level": "high",
+      "tactics": [
+        "execution"
+      ],
+      "techniques": [
+        "T1059.004"
+      ],
+      "status": "awaiting",
+      "attack": {
+        "events": 0,
+        "tests_run": [],
+        "tests_detected": []
+      },
+      "benign": {
+        "events": 3,
+        "fired": 0
+      },
+      "capture": null
+    },
+    {
+      "id": "aa97e0b7-219c-4dcd-937d-91a924668176",
+      "title": "SSH authorized_keys Written From the Command Line",
+      "file": "rules/linux/process_creation/proc_creation_lnx_ssh_authorized_keys_write.yml",
+      "platform": "Linux",
+      "level": "medium",
+      "tactics": [
+        "persistence"
+      ],
+      "techniques": [
+        "T1098.004"
+      ],
+      "status": "awaiting",
+      "attack": {
+        "events": 0,
+        "tests_run": [],
+        "tests_detected": []
+      },
+      "benign": {
+        "events": 4,
+        "fired": 0
+      },
+      "capture": null
+    },
+    {
       "id": "fcca1256-c1be-4ee6-a413-8d4db8567fdd",
       "title": "File Download With certutil",
       "file": "rules/windows/process_creation/proc_creation_win_certutil_download.yml",
+      "platform": "Windows",
       "level": "high",
       "tactics": [
         "command-and-control"
@@ -27,6 +150,7 @@
       "id": "dc149957-1081-4b7d-a89e-92e2db83e956",
       "title": "LSASS Memory Dump via comsvcs.dll MiniDump",
       "file": "rules/windows/process_creation/proc_creation_win_lsass_dump_comsvcs.yml",
+      "platform": "Windows",
       "level": "high",
       "tactics": [
         "credential-access"
@@ -50,6 +174,7 @@
       "id": "ed7a62ce-43c0-459a-b40e-2c924255661d",
       "title": "PowerShell Launched With an Encoded Command",
       "file": "rules/windows/process_creation/proc_creation_win_powershell_encoded_command.yml",
+      "platform": "Windows",
       "level": "medium",
       "tactics": [
         "execution",
@@ -75,6 +200,7 @@
       "id": "3cd1af27-c5e0-4a3c-8f6c-439739afcd45",
       "title": "Scheduled Task Created to Run From a User-Writable Folder",
       "file": "rules/windows/process_creation/proc_creation_win_schtasks_user_writable_path.yml",
+      "platform": "Windows",
       "level": "medium",
       "tactics": [
         "persistence",
@@ -99,6 +225,7 @@
       "id": "16956e32-cf00-4741-a21a-441036868eab",
       "title": "Shadow Copies or Backup Catalog Deleted",
       "file": "rules/windows/process_creation/proc_creation_win_shadow_copy_deletion.yml",
+      "platform": "Windows",
       "level": "high",
       "tactics": [
         "impact"

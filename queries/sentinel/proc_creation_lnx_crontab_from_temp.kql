@@ -1,0 +1,2 @@
+imProcessCreate
+| where TargetProcessName endswith "/crontab" and (TargetProcessCommandLine contains " /tmp/" or TargetProcessCommandLine contains " /var/tmp/" or TargetProcessCommandLine contains " /dev/shm/")

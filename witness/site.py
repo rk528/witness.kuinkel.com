@@ -43,6 +43,7 @@ def coverage(results: list[RuleResult]) -> dict:
                 "id": str(r.rule.id),
                 "title": r.rule.title,
                 "file": r.path.relative_to(ROOT).as_posix(),
+                "platform": _platform(r),
                 "level": r.rule.level.name.lower() if r.rule.level else None,
                 "tactics": r.tactics,
                 "techniques": r.techniques,
@@ -54,6 +55,11 @@ def coverage(results: list[RuleResult]) -> dict:
             for r in results
         ]
     }
+
+
+def _platform(r: RuleResult) -> str:
+    product = r.rule.logsource.product or "any"
+    return {"windows": "Windows", "linux": "Linux"}.get(product, product)
 
 
 def _badge(status: str) -> str:
@@ -133,7 +139,7 @@ def _rule(r: RuleResult) -> str:
 <details class="rule" id="{r.stem}">
   <summary>
     <span class="title">{escape(r.rule.title)}</span>
-    <span class="meta">{techniques} <span class="level {level}">{level}</span> {_badge(r.status)}</span>
+    <span class="meta"><span class="platform">{_platform(r)}</span> {techniques} <span class="level {level}">{level}</span> {_badge(r.status)}</span>
   </summary>
   <div class="body">
     <p>{description}</p>
@@ -152,13 +158,14 @@ def render(results: list[RuleResult]) -> str:
     benign_total = sum(len(r.benign) for r in results)
     benign_quiet = benign_total - sum(r.noisy for r in results)
     rules = "".join(_rule(r) for r in results)
+    platforms = sorted({_platform(r) for r in results}, key=lambda p: p != "Windows")
     return f"""<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Witness: detections that prove themselves</title>
-<meta name="description" content="Open-source Sigma detection rules for Windows. Each rule is tested in CI against attacks recorded in a lab and against look-alike normal activity, then translated for Sentinel, Defender XDR and Splunk.">
+<meta name="description" content="Open-source Sigma detection rules for Windows and Linux. Each rule is tested in CI against attacks recorded in a lab and against look-alike normal activity, then translated for Sentinel, Defender XDR and Splunk.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -175,12 +182,12 @@ def render(results: list[RuleResult]) -> str:
     <p class="eyebrow">Detection as code</p>
     <h1>Detections that have to <em>prove</em> themselves.</h1>
     <p class="lede">Every rule here is checked on every commit: it must catch an attack recorded in
-      a Windows lab and stay quiet on look-alike normal activity. Rules that pass are translated
+      a Windows or Linux lab VM and stay quiet on look-alike normal activity. Rules that pass are translated
       for Microsoft Sentinel, Defender XDR and Splunk.</p>
   </section>
 
   <section class="stats" aria-label="Summary">
-    <div><strong>{len(results)}</strong><span>rules</span></div>
+    <div><strong>{len(results)}</strong><span>rules for {" and ".join(platforms)}</span></div>
     <div><strong>{len(techniques)}</strong><span>ATT&amp;CK techniques</span></div>
     <div><strong>{proven}</strong><span>proven in the lab</span></div>
     <div><strong>{awaiting}</strong><span>awaiting lab capture</span></div>

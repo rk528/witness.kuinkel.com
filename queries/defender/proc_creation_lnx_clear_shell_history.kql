@@ -1,0 +1,2 @@
+DeviceProcessEvents
+| where (FolderPath endswith "/rm" or FolderPath endswith "/shred" or FolderPath endswith "/truncate" or FolderPath endswith "/ln") and (ProcessCommandLine contains ".bash_history" or ProcessCommandLine contains ".zsh_history" or ProcessCommandLine contains ".sh_history" or ProcessCommandLine contains ".history")

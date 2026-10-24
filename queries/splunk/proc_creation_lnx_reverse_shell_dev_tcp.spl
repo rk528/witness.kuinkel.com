@@ -1,0 +1,1 @@
+sourcetype="sysmon:linux" EventCode=1 CommandLine IN ("*/dev/tcp/*", "*/dev/udp/*") CommandLine IN ("*>&*", "*<&*")

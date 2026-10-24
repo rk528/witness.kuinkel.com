@@ -1,0 +1,2 @@
+imProcessCreate
+| where (TargetProcessName endswith "/rm" or TargetProcessName endswith "/shred" or TargetProcessName endswith "/truncate" or TargetProcessName endswith "/ln") and (TargetProcessCommandLine contains ".bash_history" or TargetProcessCommandLine contains ".zsh_history" or TargetProcessCommandLine contains ".sh_history" or TargetProcessCommandLine contains ".history")

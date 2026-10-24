@@ -1,0 +1,2 @@
+imProcessCreate
+| where (TargetProcessCommandLine contains "/dev/tcp/" or TargetProcessCommandLine contains "/dev/udp/") and (TargetProcessCommandLine contains ">&" or TargetProcessCommandLine contains "<&")

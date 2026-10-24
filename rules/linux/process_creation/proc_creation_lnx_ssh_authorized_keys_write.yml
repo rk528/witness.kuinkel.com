@@ -1,0 +1,35 @@
+title: SSH authorized_keys Written From the Command Line
+id: aa97e0b7-219c-4dcd-937d-91a924668176
+status: experimental
+description: |
+  Detects a command that appends to, copies over or edits an authorized_keys file in
+  place. Adding a key there gives an intruder a quiet way back in that survives password
+  changes. Reading the file or fixing its permissions does not match.
+references:
+  - https://attack.mitre.org/techniques/T1098/004/
+author: Raghav Kuinkel
+date: 2026-10-24
+tags:
+  - attack.persistence
+  - attack.t1098.004
+logsource:
+  product: linux
+  category: process_creation
+detection:
+  selection_file:
+    CommandLine|contains: 'authorized_keys'
+  selection_write:
+    - CommandLine|contains:
+        - '>>'
+        - '> '
+        - 'tee '
+        - 'sed -i'
+    - Image|endswith:
+        - '/cp'
+        - '/mv'
+        - '/install'
+  condition: all of selection_*
+falsepositives:
+  - Configuration management (Ansible, cloud-init) deploying keys. Filter by parent once known.
+  - ssh-copy-id, which is a legitimate way to add a key and should still be reviewed.
+level: medium

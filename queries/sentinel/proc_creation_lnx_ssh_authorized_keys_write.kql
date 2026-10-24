@@ -1,0 +1,2 @@
+imProcessCreate
+| where TargetProcessCommandLine contains "authorized_keys" and ((TargetProcessCommandLine contains ">>" or TargetProcessCommandLine contains "> " or TargetProcessCommandLine contains "tee " or TargetProcessCommandLine contains "sed -i") or (TargetProcessName endswith "/cp" or TargetProcessName endswith "/mv" or TargetProcessName endswith "/install"))

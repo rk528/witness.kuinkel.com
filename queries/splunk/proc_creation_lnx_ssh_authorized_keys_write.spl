@@ -1,0 +1,1 @@
+sourcetype="sysmon:linux" EventCode=1 CommandLine="*authorized_keys*" CommandLine IN ("*>>*", "*> *", "*tee *", "*sed -i*") OR Image IN ("*/cp", "*/mv", "*/install")

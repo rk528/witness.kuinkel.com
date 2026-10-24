@@ -1,0 +1,2 @@
+DeviceProcessEvents
+| where (ProcessCommandLine contains "/dev/tcp/" or ProcessCommandLine contains "/dev/udp/") and (ProcessCommandLine contains ">&" or ProcessCommandLine contains "<&")

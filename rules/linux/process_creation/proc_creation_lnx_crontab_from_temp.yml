@@ -1,0 +1,30 @@
+title: Crontab Installed From a Temporary Folder
+id: 329ecd7c-603c-4b7a-a98d-a92d0144ec07
+status: experimental
+description: |
+  Detects crontab loading a whole new table from a file in /tmp, /var/tmp or /dev/shm.
+  Malware writes its schedule to a world-writable folder and installs it in one step for
+  persistence. Editing with crontab -e or listing with -l never names such a file.
+references:
+  - https://attack.mitre.org/techniques/T1053/003/
+author: Raghav Kuinkel
+date: 2026-10-24
+tags:
+  - attack.persistence
+  - attack.execution
+  - attack.t1053.003
+logsource:
+  product: linux
+  category: process_creation
+detection:
+  selection_img:
+    Image|endswith: '/crontab'
+  selection_path:
+    CommandLine|contains:
+      - ' /tmp/'
+      - ' /var/tmp/'
+      - ' /dev/shm/'
+  condition: all of selection_*
+falsepositives:
+  - Provisioning scripts that stage a crontab in /tmp. Prefer a fixed path for those.
+level: medium

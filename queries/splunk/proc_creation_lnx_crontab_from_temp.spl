@@ -1,0 +1,1 @@
+sourcetype="sysmon:linux" EventCode=1 Image="*/crontab" CommandLine IN ("* /tmp/*", "* /var/tmp/*", "* /dev/shm/*")

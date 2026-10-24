@@ -1,0 +1,12 @@
+<!--
+  Minimal Sysmon for Linux config for the Witness lab: log every process creation
+  (Event ID 1). An exclude group with no rules matches nothing, so nothing is dropped.
+  If sysmon rejects the schema version, run `sysmon -s` and use the version it prints.
+-->
+<Sysmon schemaversion="4.81">
+  <EventFiltering>
+    <RuleGroup name="" groupRelation="or">
+      <ProcessCreate onmatch="exclude"/>
+    </RuleGroup>
+  </EventFiltering>
+</Sysmon>

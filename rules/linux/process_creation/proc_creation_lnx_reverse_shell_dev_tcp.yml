@@ -1,0 +1,31 @@
+title: Interactive Shell Redirected Over /dev/tcp
+id: c8d7b092-97c6-4d30-844e-6f7f91714484
+status: experimental
+description: |
+  Detects a command line that opens a bash /dev/tcp or /dev/udp socket and redirects the
+  shell's input or output through it, the shape of a reverse shell. Opening /dev/tcp on
+  its own is a common port check in health scripts, so the rule also requires a file
+  descriptor redirection (>&, <&) before it fires.
+references:
+  - https://attack.mitre.org/techniques/T1059/004/
+author: Raghav Kuinkel
+date: 2026-10-24
+tags:
+  - attack.execution
+  - attack.t1059.004
+logsource:
+  product: linux
+  category: process_creation
+detection:
+  selection_socket:
+    CommandLine|contains:
+      - '/dev/tcp/'
+      - '/dev/udp/'
+  selection_redirect:
+    CommandLine|contains:
+      - '>&'
+      - '<&'
+  condition: all of selection_*
+falsepositives:
+  - Hand-written scripts that talk to a service over /dev/tcp with descriptor redirection.
+level: high

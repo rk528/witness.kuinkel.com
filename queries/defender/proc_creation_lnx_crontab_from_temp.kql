@@ -1,0 +1,2 @@
+DeviceProcessEvents
+| where FolderPath endswith "/crontab" and (ProcessCommandLine contains " /tmp/" or ProcessCommandLine contains " /var/tmp/" or ProcessCommandLine contains " /dev/shm/")

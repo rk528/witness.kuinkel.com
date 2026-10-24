@@ -19,7 +19,8 @@ from sigma.pipelines.sentinelasim import sentinel_asim_pipeline
 from sigma.pipelines.splunk import splunk_windows_pipeline
 from sigma.pipelines.sysmon import sysmon_pipeline
 from sigma.processing.pipeline import ProcessingItem, ProcessingPipeline
-from sigma.processing.transformations import FieldMappingTransformation
+from sigma.processing.conditions import LogsourceCondition
+from sigma.processing.transformations import AddConditionTransformation, FieldMappingTransformation
 
 from .suite import ROOT
 
@@ -42,6 +43,25 @@ def asim_original_filename_fix() -> ProcessingPipeline:
                 transformation=FieldMappingTransformation(
                     {"OriginalFileName": "TargetProcessFileOriginalName"}
                 ),
+            )
+        ],
+    )
+
+
+def splunk_sysmon_linux_pipeline() -> ProcessingPipeline:
+    """Scope Linux rules to Sysmon for Linux events in Splunk.
+
+    The Splunk and Sysmon pipelines only know Windows log sources, so Linux rules would
+    otherwise search every index. The Splunk Add-on for Sysmon for Linux uses this sourcetype.
+    """
+    return ProcessingPipeline(
+        name="witness: Sysmon for Linux in Splunk",
+        priority=5,
+        items=[
+            ProcessingItem(
+                identifier="witness_splunk_sysmon_linux",
+                transformation=AddConditionTransformation({"sourcetype": "sysmon:linux", "EventID": 1}),
+                rule_conditions=[LogsourceCondition(product="linux", category="process_creation")],
             )
         ],
     )
@@ -72,7 +92,7 @@ TARGETS = [
         "splunk",
         "Splunk (Sysmon, SPL)",
         "spl",
-        lambda: SplunkBackend(sysmon_pipeline() + splunk_windows_pipeline()),
+        lambda: SplunkBackend(splunk_sysmon_linux_pipeline() + sysmon_pipeline() + splunk_windows_pipeline()),
     ),
 ]
 

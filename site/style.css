@@ -78,6 +78,7 @@ h1 em { font-style: normal; color: var(--sunset); }
 .title { font: 700 1.05rem var(--display); }
 .meta { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 0.85rem; }
 .meta a { font-family: var(--mono); }
+.platform { font: 600 0.75rem var(--sans); padding: 2px 8px; border-radius: 6px; border: 1px solid var(--line-strong); color: var(--fg); }
 .level { font: 500 0.75rem var(--mono); padding: 2px 8px; border-radius: 6px; background: rgba(238, 247, 252, 0.06); color: var(--muted); }
 .level.high, .level.critical { color: var(--blush); }
 .badge { font-size: 0.78rem; padding: 3px 10px; border-radius: 999px; font-weight: 600; }
