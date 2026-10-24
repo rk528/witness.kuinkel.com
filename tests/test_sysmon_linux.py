@@ -37,5 +37,20 @@ def test_keeps_only_process_creations_below_the_runner():
     assert [e["ProcessId"] for e in kept] == [100, 101]
 
 
+def test_follows_parents_that_were_never_logged():
+    # The process tree recorded in the Ubuntu 26.04 lab: pwsh (22698) starts the test's
+    # shell from worker thread 22727, and sudo (22771) runs chmod from a forked helper
+    # (22773). Neither 22727 nor 22773 has a creation event of its own.
+    journal = [
+        _event(22698, 22697, "/snap/powershell/425/opt/powershell/pwsh", "pwsh -NoLogo"),
+        _event(1300, 1, "/usr/sbin/cron", "cron -f"),
+        _event(22761, 22727, "/usr/bin/dash", "sh -c sudo chmod u+xs /tmp/file"),
+        _event(22771, 22761, "/usr/lib/cargo/bin/sudo", "sudo chmod u+xs /tmp/file"),
+        _event(22774, 22773, "/usr/lib/cargo/bin/coreutils/chmod", "chmod u+xs /tmp/file"),
+    ]
+    kept = list(descendants(events_from_journal(journal), root_pid=22697))
+    assert [e["ProcessId"] for e in kept] == [22698, 22761, 22771, 22774]
+
+
 def test_skips_lines_that_are_not_xml_events():
     assert list(events_from_journal(["sysmon started", "<Event><broken"])) == []

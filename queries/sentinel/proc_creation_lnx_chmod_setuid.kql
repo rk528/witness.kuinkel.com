@@ -1,2 +1,2 @@
 imProcessCreate
-| where TargetProcessName endswith "/chmod" and ((TargetProcessCommandLine contains "u+s" or TargetProcessCommandLine contains "g+s" or TargetProcessCommandLine contains "ug+s" or TargetProcessCommandLine contains " +s " or TargetProcessCommandLine contains "a+s") or TargetProcessCommandLine matches regex "(^|/|\\s)chmod\\s+(-\\S+\\s+)*0?[246][0-7]{3}\\s")
+| where TargetProcessName endswith "/chmod" and (TargetProcessCommandLine matches regex "(\\s|,)[ugoa]*[+=][rwxXt]*s" or TargetProcessCommandLine matches regex "(^|/|\\s)chmod\\s+(-\\S+\\s+)*0?[246][0-7]{3}\\s")

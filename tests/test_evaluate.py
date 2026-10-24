@@ -108,16 +108,26 @@ def test_keywords_search_every_field():
     assert not matches(rule("  keywords:\n    - 'absent'\n  condition: keywords\n"), NOTEPAD)
 
 
-def test_chmod_rule_octal_branch():
+@pytest.mark.parametrize(
+    ("cmd", "expected"),
+    [
+        ("chmod 4755 /usr/local/bin/helper", True),
+        ("/usr/bin/chmod -v 2775 /srv/shared ", True),
+        ("chmod u+s /usr/local/bin/helper", True),
+        ("chmod u+xs /usr/local/bin/helper", True),
+        ("chmod u+x,g+s /srv/shared", True),
+        ("chmod ug=rwxs /srv/shared", True),
+        ("chmod 0755 /usr/local/bin/helper", False),
+        ("chmod 644 notes.txt", False),
+        ("chmod +x setup.sh", False),
+        ("chmod g-s /srv/shared", False),
+        ("chmod u=rwx,go=rx scripts", False),
+    ],
+)
+def test_chmod_setuid_rule_modes(cmd, expected):
     from witness.suite import RULES_DIR
 
     chmod = SigmaRule.from_yaml(
         (RULES_DIR / "linux" / "process_creation" / "proc_creation_lnx_chmod_setuid.yml").read_text(encoding="utf-8")
     )
-    def fires(cmd):
-        return matches(chmod, {"Image": "/usr/bin/chmod", "CommandLine": cmd})
-
-    assert fires("chmod 4755 /usr/local/bin/helper")
-    assert fires("/usr/bin/chmod -v 2775 /srv/shared ")
-    assert not fires("chmod 0755 /usr/local/bin/helper")
-    assert not fires("chmod 644 notes.txt")
+    assert matches(chmod, {"Image": "/usr/lib/cargo/bin/coreutils/chmod", "CommandLine": cmd}) is expected

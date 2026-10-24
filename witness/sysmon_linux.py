@@ -64,13 +64,24 @@ def events_from_journal(lines: Iterable[str]) -> Iterator[dict]:
 
 
 def descendants(events: Iterable[dict], root_pid: int) -> Iterator[dict]:
-    """Process-creation events below root_pid. Events must be oldest first."""
+    """Process-creation events below root_pid. Events must be oldest first.
+
+    Sysmon only logs a process when it execs, so the parent chain has holes: pwsh starts
+    children from a worker thread and Sysmon reports that thread's ID as the parent, and
+    sudo forks a helper that never execs. Such a parent never appears in the log. Because
+    Linux hands out PIDs in increasing order, a parent that was never logged and is newer
+    than root_pid was created during the test, so its children are kept too.
+    """
     pids = {root_pid}
+    logged = set()
     for event in events:
         if event.get("EventID") != 1:
             continue
-        if event.get("ParentProcessId") in pids:
-            pids.add(event.get("ProcessId"))
+        pid, ppid = event.get("ProcessId"), event.get("ParentProcessId")
+        unlogged_newer_parent = isinstance(ppid, int) and ppid > root_pid and ppid not in logged
+        logged.add(pid)
+        if ppid in pids or unlogged_newer_parent:
+            pids.add(pid)
             yield event
 
 

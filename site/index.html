@@ -30,7 +30,7 @@
     <div><strong>11</strong><span>ATT&amp;CK techniques</span></div>
     <div><strong>0</strong><span>proven in the lab</span></div>
     <div><strong>10</strong><span>awaiting lab capture</span></div>
-    <div><strong>37/37</strong><span>normal events left alone</span></div>
+    <div><strong>38/38</strong><span>normal events left alone</span></div>
   </section>
 
   <section class="how">
@@ -54,16 +54,18 @@
     <span class="meta"><span class="platform">Linux</span> <a href="https://attack.mitre.org/techniques/T1548/001/" rel="noopener">T1548.001</a> <span class="level high">high</span> <span class="badge awaiting">Awaiting lab capture</span></span>
   </summary>
   <div class="body">
-    <p>Detects chmod adding the setuid or setgid bit, in symbolic (u+s, g+s, +s) or octal (4xxx, 2xxx, 6xxx) form. A setuid copy of a shell or interpreter is a classic way back to root. Everyday permission changes such as chmod +x or chmod 755 do not match. </p>
+    <p>Detects chmod adding the setuid or setgid bit, in symbolic (u+s, g+s, +s, and combined forms such as u+xs) or octal (4xxx, 2xxx, 6xxx) form. A setuid copy of a shell or interpreter is a classic way back to root. Everyday permission changes such as chmod +x or chmod 755, and removing the bit with g-s, do not match. The first lab capture (Atomic T1548.001 test 3) used &quot;chmod u+xs&quot;, which a plain &quot;u+s&quot; substring missed, so symbolic modes are matched with a regex. </p>
     <p class="links"><a href="https://github.com/rk528/witness.kuinkel.com/blob/main/rules/linux/process_creation/proc_creation_lnx_chmod_setuid.yml">Sigma rule</a> ·
       <a href="https://github.com/rk528/witness.kuinkel.com/tree/main/evidence/proc_creation_lnx_chmod_setuid">Evidence</a></p>
-    <h4>Recorded attack it must catch</h4><p class="muted">Not recorded yet. The rule only counts as proven once <code>scripts/capture.ps1</code> has recorded the real attack in the lab and the rule fires on every recorded test.</p><h4>Normal activity it must ignore</h4><div class="table"><table><thead><tr><th>Result</th><th>Scenario</th><th>Command line</th></tr></thead><tbody><tr><td class="ok">Quiet</td><td>Making a script executable</td><td><code>chmod +x deploy.sh</code></td></tr><tr><td class="ok">Quiet</td><td>Owner-only execute bit (u+x, not u+s)</td><td><code>chmod u+x build.sh</code></td></tr><tr><td class="ok">Quiet</td><td>Standard 755 on an app script</td><td><code>chmod 755 /opt/app/run.sh</code></td></tr><tr><td class="ok">Quiet</td><td>Recursive 0750 on a data folder</td><td><code>chmod -R 0750 /srv/data</code></td></tr><tr><td class="ok">Quiet</td><td>Config file to 644</td><td><code>chmod 644 /etc/nginx/nginx.conf</code></td></tr></tbody></table></div>
+    <h4>Recorded attack it must catch</h4><p class="muted">Not recorded yet. The rule only counts as proven once <code>scripts/capture.ps1</code> has recorded the real attack in the lab and the rule fires on every recorded test.</p><h4>Normal activity it must ignore</h4><div class="table"><table><thead><tr><th>Result</th><th>Scenario</th><th>Command line</th></tr></thead><tbody><tr><td class="ok">Quiet</td><td>Making a script executable</td><td><code>chmod +x deploy.sh</code></td></tr><tr><td class="ok">Quiet</td><td>Owner-only execute bit (u+x, not u+s)</td><td><code>chmod u+x build.sh</code></td></tr><tr><td class="ok">Quiet</td><td>Standard 755 on an app script</td><td><code>chmod 755 /opt/app/run.sh</code></td></tr><tr><td class="ok">Quiet</td><td>Recursive 0750 on a data folder</td><td><code>chmod -R 0750 /srv/data</code></td></tr><tr><td class="ok">Quiet</td><td>Config file to 644</td><td><code>chmod 644 /etc/nginx/nginx.conf</code></td></tr><tr><td class="ok">Quiet</td><td>Removing the setgid bit (g-s) from a shared folder</td><td><code>chmod g-s /srv/shared</code></td></tr></tbody></table></div>
     <h4>Ready-to-run queries</h4><h5>Microsoft Sentinel (ASIM, KQL)</h5><pre><code>imProcessCreate
-| where TargetProcessName endswith &quot;/chmod&quot; and ((TargetProcessCommandLine contains &quot;u+s&quot; or TargetProcessCommandLine contains &quot;g+s&quot; or TargetProcessCommandLine contains &quot;ug+s&quot; or TargetProcessCommandLine contains &quot; +s &quot; or TargetProcessCommandLine contains &quot;a+s&quot;) or TargetProcessCommandLine matches regex &quot;(^|/|\\s)chmod\\s+(-\\S+\\s+)*0?[246][0-7]{3}\\s&quot;)</code></pre><h5>Microsoft Defender XDR (KQL)</h5><pre><code>DeviceProcessEvents
-| where FolderPath endswith &quot;/chmod&quot; and ((ProcessCommandLine contains &quot;u+s&quot; or ProcessCommandLine contains &quot;g+s&quot; or ProcessCommandLine contains &quot;ug+s&quot; or ProcessCommandLine contains &quot; +s &quot; or ProcessCommandLine contains &quot;a+s&quot;) or ProcessCommandLine matches regex &quot;(^|/|\\s)chmod\\s+(-\\S+\\s+)*0?[246][0-7]{3}\\s&quot;)</code></pre><h5>Splunk (Sysmon, SPL)</h5><pre><code>sourcetype=&quot;sysmon:linux&quot; EventCode=1 Image=&quot;*/chmod&quot;
-| rex field=CommandLine &quot;(?&lt;CommandLineMatch&gt;(^|/|\\s)chmod\\s+(-\\S+\\s+)*0?[246][0-7]{3}\\s)&quot;
+| where TargetProcessName endswith &quot;/chmod&quot; and (TargetProcessCommandLine matches regex &quot;(\\s|,)[ugoa]*[+=][rwxXt]*s&quot; or TargetProcessCommandLine matches regex &quot;(^|/|\\s)chmod\\s+(-\\S+\\s+)*0?[246][0-7]{3}\\s&quot;)</code></pre><h5>Microsoft Defender XDR (KQL)</h5><pre><code>DeviceProcessEvents
+| where FolderPath endswith &quot;/chmod&quot; and (ProcessCommandLine matches regex &quot;(\\s|,)[ugoa]*[+=][rwxXt]*s&quot; or ProcessCommandLine matches regex &quot;(^|/|\\s)chmod\\s+(-\\S+\\s+)*0?[246][0-7]{3}\\s&quot;)</code></pre><h5>Splunk (Sysmon, SPL)</h5><pre><code>sourcetype=&quot;sysmon:linux&quot; EventCode=1 Image=&quot;*/chmod&quot;
+| rex field=CommandLine &quot;(?&lt;CommandLineMatch&gt;(\\s|,)[ugoa]*[+=][rwxXt]*s)&quot;
 | eval CommandLineCondition=if(isnotnull(CommandLineMatch), &quot;true&quot;, &quot;false&quot;)
-| search CommandLine IN (&quot;*u+s*&quot;, &quot;*g+s*&quot;, &quot;*ug+s*&quot;, &quot;* +s *&quot;, &quot;*a+s*&quot;) OR CommandLineCondition=&quot;true&quot;</code></pre>
+| rex field=CommandLine &quot;(?&lt;CommandLineMatch2&gt;(^|/|\\s)chmod\\s+(-\\S+\\s+)*0?[246][0-7]{3}\\s)&quot;
+| eval CommandLineCondition2=if(isnotnull(CommandLineMatch2), &quot;true&quot;, &quot;false&quot;)
+| search CommandLineCondition=&quot;true&quot; OR CommandLineCondition2=&quot;true&quot;</code></pre>
   </div>
 </details>
 <details class="rule" id="proc_creation_lnx_clear_shell_history">

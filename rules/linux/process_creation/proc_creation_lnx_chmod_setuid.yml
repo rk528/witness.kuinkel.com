@@ -2,13 +2,17 @@ title: Setuid or Setgid Bit Set With chmod
 id: 2ccc2bfc-12ad-47cf-8e07-8b7782af8fd9
 status: experimental
 description: |
-  Detects chmod adding the setuid or setgid bit, in symbolic (u+s, g+s, +s) or octal
-  (4xxx, 2xxx, 6xxx) form. A setuid copy of a shell or interpreter is a classic way back
-  to root. Everyday permission changes such as chmod +x or chmod 755 do not match.
+  Detects chmod adding the setuid or setgid bit, in symbolic (u+s, g+s, +s, and combined
+  forms such as u+xs) or octal (4xxx, 2xxx, 6xxx) form. A setuid copy of a shell or
+  interpreter is a classic way back to root. Everyday permission changes such as chmod +x
+  or chmod 755, and removing the bit with g-s, do not match.
+  The first lab capture (Atomic T1548.001 test 3) used "chmod u+xs", which a plain
+  "u+s" substring missed, so symbolic modes are matched with a regex.
 references:
   - https://attack.mitre.org/techniques/T1548/001/
 author: Raghav Kuinkel
 date: 2026-10-24
+modified: 2026-10-24
 tags:
   - attack.privilege-escalation
   - attack.defense-evasion
@@ -20,12 +24,7 @@ detection:
   selection_img:
     Image|endswith: '/chmod'
   selection_symbolic:
-    CommandLine|contains:
-      - 'u+s'
-      - 'g+s'
-      - 'ug+s'
-      - ' +s '
-      - 'a+s'
+    CommandLine|re: '(\s|,)[ugoa]*[+=][rwxXt]*s'
   selection_octal:
     CommandLine|re: '(^|/|\s)chmod\s+(-\S+\s+)*0?[246][0-7]{3}\s'
   condition: selection_img and (selection_symbolic or selection_octal)

@@ -20,7 +20,7 @@
         "tests_detected": []
       },
       "benign": {
-        "events": 5,
+        "events": 6,
         "fired": 0
       },
       "capture": null
