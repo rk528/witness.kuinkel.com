@@ -1,0 +1,1 @@
+source="WinEventLog:Microsoft-Windows-Sysmon/Operational" EventCode=1 Image="*\\rundll32.exe" OR OriginalFileName="RUNDLL32.EXE" CommandLine="*comsvcs*" CommandLine IN ("*minidump*", "*#24*", "*#+24*")

@@ -1,0 +1,2 @@
+DeviceProcessEvents
+| where (FolderPath endswith "\\rundll32.exe" or ProcessVersionInfoOriginalFileName =~ "RUNDLL32.EXE") and ProcessCommandLine contains "comsvcs" and (ProcessCommandLine contains "minidump" or ProcessCommandLine contains "#24" or ProcessCommandLine contains "#+24")

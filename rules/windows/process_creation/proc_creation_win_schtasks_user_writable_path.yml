@@ -1,0 +1,39 @@
+title: Scheduled Task Created to Run From a User-Writable Folder
+id: 3cd1af27-c5e0-4a3c-8f6c-439739afcd45
+status: experimental
+description: |
+  Detects schtasks /create where the task runs something out of Temp, Public or the
+  roaming profile. Malware drops its payload where any user can write and then adds a
+  task for persistence. AppData\Local as a whole is left out on purpose: OneDrive, Teams
+  and other per-user updaters legitimately schedule tasks from there.
+references:
+  - https://attack.mitre.org/techniques/T1053/005/
+author: Raghav Kuinkel
+date: 2026-10-24
+tags:
+  - attack.persistence
+  - attack.execution
+  - attack.t1053.005
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection_img:
+    - Image|endswith: '\schtasks.exe'
+    - OriginalFileName: 'schtasks.exe'
+  selection_create:
+    CommandLine|windash|contains: '-create'
+  selection_path:
+    CommandLine|contains:
+      - '\AppData\Local\Temp\'
+      - '\AppData\Roaming\'
+      - '\Users\Public\'
+      - '\Windows\Temp\'
+      - '%TEMP%'
+      - '%TMP%'
+      - '%APPDATA%'
+      - '%PUBLIC%'
+  condition: all of selection_*
+falsepositives:
+  - Installers that stage themselves in Temp and schedule a one-off cleanup task.
+level: medium

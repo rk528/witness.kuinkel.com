@@ -1,0 +1,122 @@
+{
+  "rules": [
+    {
+      "id": "fcca1256-c1be-4ee6-a413-8d4db8567fdd",
+      "title": "File Download With certutil",
+      "file": "rules/windows/process_creation/proc_creation_win_certutil_download.yml",
+      "level": "high",
+      "tactics": [
+        "command-and-control"
+      ],
+      "techniques": [
+        "T1105"
+      ],
+      "status": "awaiting",
+      "attack": {
+        "events": 0,
+        "tests_run": [],
+        "tests_detected": []
+      },
+      "benign": {
+        "events": 3,
+        "fired": 0
+      },
+      "capture": null
+    },
+    {
+      "id": "dc149957-1081-4b7d-a89e-92e2db83e956",
+      "title": "LSASS Memory Dump via comsvcs.dll MiniDump",
+      "file": "rules/windows/process_creation/proc_creation_win_lsass_dump_comsvcs.yml",
+      "level": "high",
+      "tactics": [
+        "credential-access"
+      ],
+      "techniques": [
+        "T1003.001"
+      ],
+      "status": "awaiting",
+      "attack": {
+        "events": 0,
+        "tests_run": [],
+        "tests_detected": []
+      },
+      "benign": {
+        "events": 3,
+        "fired": 0
+      },
+      "capture": null
+    },
+    {
+      "id": "ed7a62ce-43c0-459a-b40e-2c924255661d",
+      "title": "PowerShell Launched With an Encoded Command",
+      "file": "rules/windows/process_creation/proc_creation_win_powershell_encoded_command.yml",
+      "level": "medium",
+      "tactics": [
+        "execution",
+        "defense-evasion"
+      ],
+      "techniques": [
+        "T1059.001",
+        "T1027"
+      ],
+      "status": "awaiting",
+      "attack": {
+        "events": 0,
+        "tests_run": [],
+        "tests_detected": []
+      },
+      "benign": {
+        "events": 4,
+        "fired": 0
+      },
+      "capture": null
+    },
+    {
+      "id": "3cd1af27-c5e0-4a3c-8f6c-439739afcd45",
+      "title": "Scheduled Task Created to Run From a User-Writable Folder",
+      "file": "rules/windows/process_creation/proc_creation_win_schtasks_user_writable_path.yml",
+      "level": "medium",
+      "tactics": [
+        "persistence",
+        "execution"
+      ],
+      "techniques": [
+        "T1053.005"
+      ],
+      "status": "awaiting",
+      "attack": {
+        "events": 0,
+        "tests_run": [],
+        "tests_detected": []
+      },
+      "benign": {
+        "events": 3,
+        "fired": 0
+      },
+      "capture": null
+    },
+    {
+      "id": "16956e32-cf00-4741-a21a-441036868eab",
+      "title": "Shadow Copies or Backup Catalog Deleted",
+      "file": "rules/windows/process_creation/proc_creation_win_shadow_copy_deletion.yml",
+      "level": "high",
+      "tactics": [
+        "impact"
+      ],
+      "techniques": [
+        "T1490"
+      ],
+      "status": "awaiting",
+      "attack": {
+        "events": 0,
+        "tests_run": [],
+        "tests_detected": []
+      },
+      "benign": {
+        "events": 5,
+        "fired": 0
+      },
+      "capture": null
+    }
+  ]
+}

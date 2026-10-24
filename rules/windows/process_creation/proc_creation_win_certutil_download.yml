@@ -1,0 +1,36 @@
+title: File Download With certutil
+id: fcca1256-c1be-4ee6-a413-8d4db8567fdd
+status: experimental
+description: |
+  Detects certutil.exe fetching a remote URL with -urlcache or -verifyctl. certutil is
+  signed by Microsoft and present on every Windows host, so it is a favourite way to pull
+  a second stage past application allow-listing. Requiring a URL scheme keeps routine
+  cache maintenance such as "certutil -urlcache * delete" quiet.
+references:
+  - https://attack.mitre.org/techniques/T1105/
+  - https://lolbas-project.github.io/lolbas/Binaries/Certutil/
+author: Raghav Kuinkel
+date: 2026-10-24
+tags:
+  - attack.command-and-control
+  - attack.t1105
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection_img:
+    - Image|endswith: '\certutil.exe'
+    - OriginalFileName: 'CertUtil.exe'
+  selection_flag:
+    CommandLine|windash|contains:
+      - '-urlcache'
+      - '-verifyctl'
+  selection_url:
+    CommandLine|contains:
+      - 'http://'
+      - 'https://'
+      - 'ftp://'
+  condition: all of selection_*
+falsepositives:
+  - Administrators testing CRL or AIA reachability by hand. These are rare and worth a look.
+level: high

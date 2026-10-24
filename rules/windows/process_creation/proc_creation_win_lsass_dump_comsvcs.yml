@@ -1,0 +1,33 @@
+title: LSASS Memory Dump via comsvcs.dll MiniDump
+id: dc149957-1081-4b7d-a89e-92e2db83e956
+status: experimental
+description: |
+  Detects rundll32 calling the MiniDump export of comsvcs.dll, a built-in way to dump
+  LSASS memory without bringing any tools. Attackers often call the export by its
+  ordinal (#24) to dodge string matches, so both forms are covered. The OriginalFileName
+  branch still fires when rundll32.exe has been copied and renamed.
+references:
+  - https://attack.mitre.org/techniques/T1003/001/
+author: Raghav Kuinkel
+date: 2026-10-24
+tags:
+  - attack.credential-access
+  - attack.t1003.001
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection_img:
+    - Image|endswith: '\rundll32.exe'
+    - OriginalFileName: 'RUNDLL32.EXE'
+  selection_dll:
+    CommandLine|contains: 'comsvcs'
+  selection_export:
+    CommandLine|contains:
+      - 'minidump'
+      - '#24'
+      - '#+24'
+  condition: all of selection_*
+falsepositives:
+  - None expected. Legitimate crash-dump tooling does not go through comsvcs.dll.
+level: high

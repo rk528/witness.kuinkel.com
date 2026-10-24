@@ -1,0 +1,43 @@
+title: PowerShell Launched With an Encoded Command
+id: ed7a62ce-43c0-459a-b40e-2c924255661d
+status: experimental
+description: |
+  Detects powershell.exe or pwsh.exe started with -EncodedCommand or one of its short
+  forms. Encoding hides the real script from command-line logging, which is why loaders
+  and C2 stagers use it. The flag list deliberately leaves out "-enco": it also matches
+  "-Encoding" inside ordinary -Command scripts and was the main source of noise.
+references:
+  - https://attack.mitre.org/techniques/T1059/001/
+  - https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_powershell_exe
+author: Raghav Kuinkel
+date: 2026-10-24
+tags:
+  - attack.execution
+  - attack.t1059.001
+  - attack.defense-evasion
+  - attack.t1027
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection_img:
+    - Image|endswith:
+        - '\powershell.exe'
+        - '\pwsh.exe'
+    - OriginalFileName:
+        - 'PowerShell.EXE'
+        - 'pwsh.dll'
+  selection_flag:
+    CommandLine|windash|contains:
+      - ' -e '
+      - ' -ec '
+      - ' -en '
+      - ' -enc '
+      - ' -encodedcommand '
+  filter_optional_sccm:
+    ParentImage|startswith: 'C:\Windows\CCM\'
+  condition: all of selection_* and not 1 of filter_optional_*
+falsepositives:
+  - Management agents that wrap their scripts in -EncodedCommand. SCCM is filtered;
+    add others the same way after checking what they run.
+level: medium

@@ -1,0 +1,50 @@
+title: Shadow Copies or Backup Catalog Deleted
+id: 16956e32-cf00-4741-a21a-441036868eab
+status: experimental
+description: |
+  Detects the commands ransomware runs just before encrypting, to stop the victim rolling
+  back: deleting Volume Shadow Copies with vssadmin, wmic or PowerShell, deleting the
+  Windows Backup catalog, and turning off boot recovery with bcdedit. Read-only commands
+  such as "vssadmin list shadows" or "bcdedit /enum" do not match.
+references:
+  - https://attack.mitre.org/techniques/T1490/
+author: Raghav Kuinkel
+date: 2026-10-24
+tags:
+  - attack.impact
+  - attack.t1490
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection_vssadmin:
+    Image|endswith: '\vssadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'shadows'
+  selection_wmic:
+    Image|endswith: '\wmic.exe'
+    CommandLine|contains|all:
+      - 'shadowcopy'
+      - 'delete'
+  selection_powershell:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains|all:
+      - 'Win32_ShadowCopy'
+      - 'Delete'
+  selection_wbadmin:
+    Image|endswith: '\wbadmin.exe'
+    CommandLine|contains|all:
+      - 'delete'
+      - 'catalog'
+  selection_bcdedit:
+    Image|endswith: '\bcdedit.exe'
+    CommandLine|contains:
+      - 'recoveryenabled no'
+      - 'bootstatuspolicy ignoreallfailures'
+  condition: 1 of selection_*
+falsepositives:
+  - Backup software pruning its own old shadow copies. Check the parent process.
+level: high
